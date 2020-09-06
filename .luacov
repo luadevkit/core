@@ -1,0 +1,7 @@
+include = {
+  'src/ldk/*'
+}
+runreport = true
+console = {
+  use_color = true
+}
