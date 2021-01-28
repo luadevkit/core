@@ -259,6 +259,7 @@ describe("#array", function()
     local TestCases = {
       {{}, always(true), {}},
       {{1,2,3,4,5}, lt(3), {3,4,5}},
+      {{1,3,2,4,5}, lt(3), {3,2,4,5}},
       {{1,2,3,4,5}, lt(0), {1,2,3,4,5}}
     }
     for _, case in ipairs(TestCases) do

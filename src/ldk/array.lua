@@ -484,7 +484,7 @@ end
 -- index in the input array.
 function drop(a, n)
   n = n or 1
-  if #a > 0 then
+  if #a > 0 and n > 0 then
     if n < #a then
       tbl_move(a, n + 1, #a, 1, a)
     end
@@ -497,7 +497,15 @@ end
 -- @tparam function p a function to test each element (see @{predicate}).
 function drop_while(a, p)
   if #a > 0 then
-    drop(a, count(a, p))
+    local n = 0
+    for _, x in ipairs(a) do
+      if p(x) then
+        n = n + 1
+      else
+        break
+      end
+    end
+    drop(a, n)
   end
 end
 
