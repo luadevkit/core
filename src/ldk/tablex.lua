@@ -3,15 +3,17 @@
 
 local M = {}
 
+local stringx = require 'ldk.stringx'
+
+local ipairs = ipairs
 local next = next
 local pairs = pairs
-local ipairs = ipairs
-local l_tostring = tostring
-local type = type
 local rawequal = rawequal
+local tostring = tostring
+local type = type
 
-local tbl_pack = table.pack
 local tbl_concat = table.concat
+local tbl_pack = table.pack
 local tbl_sort = table.sort
 
 local _ENV = M
@@ -491,48 +493,56 @@ end
 
 --- Returns the string representation of a table.
 -- @tparam table t the table to return the string representation of.
--- @tparam[opt] boolean sort_keys if `true` the keys of the table will be sorted.
 -- @treturn string a string representing the given table.
-function tostring(t, sort_keys)
-  local buf, refs, ref, tabs = {}, {}, 0, 0
-  local function build(x)
-    if type(x) == 'string' then
-      buf[#buf + 1] = ('%q'):format(x)
-    elseif type(x) ~= 'table' then
-      buf[#buf + 1] = l_tostring(x)
-    elseif refs[x] then
-      buf[#buf + 1] = '@'
-      buf[#buf + 1] = refs[x]
+function to_string(t)
+
+  local b, seen = {}, {}
+  local add_value -- forward declaration
+  local function add_table(tt)
+    if seen[tt] then
+      b[#b + 1] = '<table>'
+      return
+    end
+    seen[tt] = true
+
+    b[#b + 1] = '{'
+    for k, v in pairs(tt) do
+      b[#b + 1] = '['
+      add_value(k)
+      b[#b + 1] = ']='
+      add_value(v)
+      b[#b + 1] = ','
+    end
+    if b[#b] == ',' then
+      b[#b] = nil
+    end
+    b[#b + 1] = '}'
+  end
+
+  add_value = function(v)
+    if v == nil then
+      b[#b + 1] = 'nil'
+      return
+    end
+
+    local tv = type(v)
+    if tv == 'string' then
+      b[#b + 1] = stringx.smart_quotes(v)
+    elseif tv == 'number' then
+      b[#b + 1] = tostring(v)
+    elseif tv == 'boolean' then
+      b[#b + 1] = tostring(v)
+    elseif tv == 'table' then
+      add_table(v)
     else
-      refs[x], ref = ref, ref + 1
-      if is_empty(x) then
-        buf[#buf + 1] = '{} -- '
-        buf[#buf + 1] = refs[x]
-      else
-        buf[#buf + 1] = '{-- '
-        buf[#buf + 1] = refs[x]
-        buf[#buf + 1] = '\n'
-        tabs = tabs + 1
-        for _, k in ipairs(keys(x, sort_keys)) do
-          buf[#buf + 1] = ('  '):rep(tabs)
-          if type(k) == 'string' then
-            buf[#buf + 1] = ('[%q] = '):format(k)
-          elseif type(k) == 'number' then
-            buf[#buf + 1] = ('[%d] = '):format(k)
-          else
-            buf[#buf + 1] = ('[%s] = '):format(k)
-          end
-          build(x[k])
-          buf[#buf + 1] = ',\n'
-        end
-        tabs = tabs - 1
-        buf[#buf + 1] = ('  '):rep(tabs)
-        buf[#buf + 1] = '}'
-      end
+      b[#b + 1] = '<'
+      b[#b + 1] = tostring(v)
+      b[#b + 1] = '>'
     end
   end
-  build(t)
-  return tbl_concat(buf)
+
+  add_table(t)
+  return tbl_concat(b)
 end
 
 --- Merges the given tables into a new one.

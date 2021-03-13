@@ -2,9 +2,12 @@
 -- @module ldk.array
 local M = {}
 
+local stringx = require 'ldk.stringx'
+
 local ipairs = ipairs
 local pairs = pairs
 local rawequal = rawequal
+local tostring = tostring
 local type = type
 
 local math_max = math.max
@@ -992,24 +995,73 @@ end
 -- @tparam[opt] integer from the starting index of the range.
 -- @tparam[optchain] integer to the ending index of the range.
 -- @treturn string the string representing the specified range of elements.
-function tostring(a, from, to)
+function to_string(a, from, to)
   if #a == 0 then
     return '{}'
   end
   from, to = normalize(a, from, to)
-  if from > to then
-    return '{..}'
+
+  local b, seen = {}, {}
+  local add_value -- forward declaration
+  local function add_table(t)
+    if seen[t] then
+      b[#b + 1] = '<table>'
+      return
+    end
+    seen[t] = true
+
+    b[#b + 1] = '{'
+    for k, v in pairs(t) do
+      b[#b + 1] = '['
+      add_value(k)
+      b[#b + 1] = ']='
+      add_value(v)
+      b[#b + 1] = ','
+    end
+    if b[#b] == ',' then
+      b[#b] = nil
+    end
+    b[#b + 1] = '}'
   end
-  local b = {}
+
+  add_value = function(v)
+    if v == nil then
+      b[#b + 1] = 'nil'
+      return
+    end
+    local tv = type(v)
+    if tv == 'string' then
+      b[#b + 1] = stringx.smart_quotes(v)
+    elseif tv == 'number' then
+      b[#b + 1] = tostring(v)
+    elseif tv == 'boolean' then
+      b[#b + 1] = tostring(v)
+    elseif tv == 'table' then
+      add_table(v)
+    else
+      b[#b + 1] = '<'
+      b[#b + 1] = tostring(v)
+      b[#b + 1] = '>'
+    end
+  end
+
+  seen[a] = true
   b[#b + 1] = '{'
   if from > 1 then
-    b[#b + 1] = '.., '
+    b[#b + 1] = '...,'
   end
-  b[#b + 1] = tbl_concat(a, ', ', from, to)
+  for i = from, to do
+    add_value(a[i])
+    b[#b + 1] = ','
+  end
   if to < #a then
-    b[#b + 1] = ', ..'
+    b[#b + 1] = '...'
+  end
+  if b[#b] == ',' then
+    b[#b] = nil
   end
   b[#b + 1] = '}'
+
   return tbl_concat(b)
 end
 
