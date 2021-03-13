@@ -2,7 +2,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-<title>ldk-core 0.1.0</title>
+<title>ldk-core 0.1.1</title>
 <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -127,7 +127,7 @@ Provides methods for creating, manipulating, and searching arrays.
 <td class="summary">Inserts a specified value at the given position of a giving array, shifting its elements.</td>
 </tr>
 <tr>
-<td class="name" nowrap><a href="#insert_all">insert_all(a1[, pos=#a1 + 1], a2, p)</a></td>
+<td class="name" nowrap><a href="#insert_all">insert_all(a1, a2[, pos=#a1 + 1][, p])</a></td>
 <td class="summary">Inserts the values of an array at the given position in another array, shifting its elements.</td>
 </tr>
 <tr>
@@ -231,7 +231,7 @@ Provides methods for creating, manipulating, and searching arrays.
 <td class="summary">Creates a set from a range of elements of an array.</td>
 </tr>
 <tr>
-<td class="name" nowrap><a href="#tostring">tostring(a[, from[, to]])</a></td>
+<td class="name" nowrap><a href="#to_string">to_string(a[, from[, to]])</a></td>
 <td class="summary">Returns the string representation of a range of elements of an array.</td>
 </tr>
 <tr>
@@ -872,13 +872,17 @@ the array with the values to insert.
 </dd>
 <dt>
 <a name = "insert_all"></a>
-<strong>insert_all(a1[, pos=#a1 + 1], a2, p)</strong>
+<strong>insert_all(a1, a2[, pos=#a1 + 1][, p])</strong>
 </dt>
 <dd>
 <p>Inserts the values of an array at the given position in another array, shifting its elements.  If a predicated is specified, the source array is filtered using it.</p>
 <h3>Parameters:</h3>
 <ul>
 <li><span class="parameter">a1</span>
+<span class="types"><span class="type">table</span></span>
+the array with the values to insert.
+</li>
+<li><span class="parameter">a2</span>
 <span class="types"><span class="type">table</span></span>
 the array to insert the values into.
 </li>
@@ -887,13 +891,10 @@ the array to insert the values into.
 the position at which to insert the new values.
 (<em>default</em> #a1 + 1)
 </li>
-<li><span class="parameter">a2</span>
-<span class="types"><span class="type">table</span></span>
-the array with the values to insert.
-</li>
 <li><span class="parameter">p</span>
 <span class="types"><span class="type">function</span></span>
 a function to test each element (see <a href="../modules/ldk.array.html#predicate">predicate</a>).
+(<em>optional</em>)
 </li>
 </ul>
 </dd>
@@ -1541,8 +1542,8 @@ a set containing the elements of the input array.
 </ol>
 </dd>
 <dt>
-<a name = "tostring"></a>
-<strong>tostring(a[, from[, to]])</strong>
+<a name = "to_string"></a>
+<strong>to_string(a[, from[, to]])</strong>
 </dt>
 <dd>
 <p>Returns the string representation of a range of elements of an array.</p>

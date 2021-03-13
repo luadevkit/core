@@ -2,7 +2,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-<title>ldk-core 0.1.0</title>
+<title>ldk-core 0.1.1</title>
 <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -53,6 +53,10 @@ Extensions to the <code>table</code> module.
 <tr>
 <td class="name" nowrap><a href="#clear">clear(t)</a></td>
 <td class="summary">Removes all key-value pairs from a table.</td>
+</tr>
+<tr>
+<td class="name" nowrap><a href="#clone">clone(t)</a></td>
+<td class="summary">Clones the given table.</td>
 </tr>
 <tr>
 <td class="name" nowrap><a href="#contains_key">contains_key(t, k[, eq])</a></td>
@@ -135,7 +139,7 @@ Extensions to the <code>table</code> module.
 <td class="summary">Calculates the sum of the table of numbers that are obtained by applying a transform function to each key-value pair of a table.</td>
 </tr>
 <tr>
-<td class="name" nowrap><a href="#tostring">tostring(t[, sort_keys])</a></td>
+<td class="name" nowrap><a href="#to_string">to_string(t)</a></td>
 <td class="summary">Returns the string representation of a table.</td>
 </tr>
 <tr>
@@ -275,6 +279,25 @@ the average of the projected values; <code>nil</code> if the table is empty.
 the table to wipe.
 </li>
 </ul>
+</dd>
+<dt>
+<a name = "clone"></a>
+<strong>clone(t)</strong>
+</dt>
+<dd>
+<p>Clones the given table.</p>
+<h3>Parameters:</h3>
+<ul>
+<li><span class="parameter">t</span>
+<span class="types"><span class="type">table</span></span>
+the table to clone.
+</li>
+</ul>
+<h3>Returns:</h3>
+<ol>
+<span class="types"><span class="type">table</span></span>
+a clone of the given table.
+</ol>
 </dd>
 <dt>
 <a name = "contains_key"></a>
@@ -757,8 +780,8 @@ the sum of the projected key-value pairs.
 </ol>
 </dd>
 <dt>
-<a name = "tostring"></a>
-<strong>tostring(t[, sort_keys])</strong>
+<a name = "to_string"></a>
+<strong>to_string(t)</strong>
 </dt>
 <dd>
 <p>Returns the string representation of a table.</p>
@@ -767,11 +790,6 @@ the sum of the projected key-value pairs.
 <li><span class="parameter">t</span>
 <span class="types"><span class="type">table</span></span>
 the table to return the string representation of.
-</li>
-<li><span class="parameter">sort_keys</span>
-<span class="types"><span class="type">boolean</span></span>
-if <code>true</code> the keys of the table will be sorted.
-(<em>optional</em>)
 </li>
 </ul>
 <h3>Returns:</h3>
