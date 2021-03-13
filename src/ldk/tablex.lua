@@ -18,7 +18,7 @@ local tbl_sort = table.sort
 
 local _ENV = M
 
-local DEFAULTS = {
+local Defaults = {
   eq = function(x, y)
     return x == y
   end,
@@ -108,7 +108,7 @@ end
 -- @tparam[opt] transform f a transform function to apply to each key-value pair.
 -- @treturn number the sum of the projected key-value pairs.
 function sum(t, f)
-  f = f or DEFAULTS.select_value
+  f = f or Defaults.select_value
   local sum, n = 0, 0
   for k, v in pairs(t) do
     sum = sum + f(k, v)
@@ -185,7 +185,7 @@ end
 -- @return the key of maximum projected value in the table, or `nil` if the table is empty.
 -- @return the maximum projected value in the table, or `nil` if the table is empty.
 function max(t, f)
-  f = f or DEFAULTS.id
+  f = f or Defaults.id
   local rk, rv
   for k, v in pairs(t) do
     local fv = f(v)
@@ -221,7 +221,7 @@ end
 -- @tparam[opt] transform f a transform function to apply to each value.
 -- @return the minimum projected value in the table, or `nil` if the table is empty.
 function min(t, f)
-  f = f or DEFAULTS.id
+  f = f or Defaults.id
   local rk, rv
   for k, v in pairs(t) do
     local fv = f(v)
@@ -276,8 +276,6 @@ function values(t)
   end
 end
 
-
-
 --- Determines whether a table contains a specified value by using the given
 -- equality comparer.
 -- @tparam table t the table in which to locate the value.
@@ -286,7 +284,7 @@ end
 -- @treturn boolean `true` if the table contains the specified value;
 -- otherwise `false`.
 function contains_value(t, v, eq)
-  eq = eq or DEFAULTS.eq
+  eq = eq or Defaults.eq
   for _, x in pairs(t) do
     if eq(x, v) then
       return true
@@ -356,7 +354,7 @@ local function _eq(t1, t2, eq)
   end
 
   local k1, v1, k2, v2
-  eq = eq or DEFAULTS.eq
+  eq = eq or Defaults.eq
   while true do
     k1, v1 = next(t1, k1)
     k2, v2 = next(t2, k2)
@@ -372,7 +370,7 @@ local function _eq(t1, t2, eq)
       end
     else
       local v12, v21 = t1[k2], t2[k1]
-      if v12 == nil or v21 == nil or not _eqv(v1, t1, v21) or not _eqv(v2, v12) then
+      if v12 == nil or v21 == nil or not _eqv(v1, v21) or not _eqv(v2, v12) then
         return false
       end
     end
@@ -410,13 +408,19 @@ function clear(t)
   end
 end
 
+--- Clones the given table.
+-- @tparam table t the table to clone.
+-- @treturn table a clone of the given table.
+function clone(t)
+  return copy(t, {})
+end
+
 --- Copies the key-value pairs from a table to another table.
 -- @tparam table src the table to copy from.
 -- @tparam table dst the table to copy to.
 -- @tparam[opt] table keys a list of keys to copy; if `nil` all the keys will be copied.
 -- @treturn table the _dst_ table.
 function copy(src, dst, keys)
-  dst = dst or {}
   if keys then
     for _, k in ipairs(keys) do
       if src[k] ~= nil then

@@ -21,7 +21,7 @@ local tbl_remove = table.remove
 
 local _ENV = M
 
-local defaults = {
+local Defaults = {
   eq = function(x, y)
     return x == y
   end,
@@ -146,7 +146,7 @@ end
 function to_map(a, from, to, f)
   from, to, f = normalize(a, from, to, f)
   local r = {}
-  f = f or defaults.id
+  f = f or Defaults.id
   for i = from, to do
     local x = a[i]
     r[x] = f(x)
@@ -191,7 +191,7 @@ end
 -- @tparam[opt] transform f a transform function to apply to each element.
 -- @treturn number the sum of the projected values.
 function sum(a, f)
-  f = f or defaults.id
+  f = f or Defaults.id
   local sum = 0
   for i = 1, #a do
     sum = sum + f(a[i])
@@ -246,7 +246,7 @@ end
 function count(a, p)
   local n = 0
   for i = 1, #a do
-    if p(a[i]) then
+    if p(a[i], i) then
       n = n + 1
     end
   end
@@ -409,7 +409,7 @@ function max(a, f)
   if #a == 0 then
     return
   end
-  f = f or defaults.id
+  f = f or Defaults.id
   local fr
   for _, x in ipairs(a) do
     local fx = f(x)
@@ -449,7 +449,7 @@ function min(a, f)
   if #a == 0 then
     return
   end
-  f = f or defaults.id
+  f = f or Defaults.id
   local fr
   for _, x in ipairs(a) do
     local fx = f(x)
@@ -549,7 +549,7 @@ end
 -- from the two arrays.
 -- @treturn table an array containing merged elements of the input arrays.
 function zip(a1, a2, f)
-  f = f or defaults.make_pair
+  f = f or Defaults.make_pair
   local r = {}
   for i = 1, math_min(#a1, #a2) do
     local x, y = a1[i], a2[i]
@@ -569,7 +569,7 @@ end
 -- the element is not found.
 function binary_search(a, v, from, to, cmp)
   from, to, cmp = normalize(a, from, to, cmp)
-  cmp = cmp or defaults.cmp
+  cmp = cmp or Defaults.cmp
   while from <= to do
     local mid = (from + to) // 2
     local test = cmp(a[mid], v)
@@ -631,7 +631,7 @@ function cmp(a1, a2, cmp)
     return 1
   end
 
-  cmp = cmp or defaults.cmp
+  cmp = cmp or Defaults.cmp
   for i = 1, #a1 do
     local t = cmp(a1[i], a2[i])
     if t ~= 0 then
@@ -657,7 +657,7 @@ function eq(a1, a2, eq)
     return false
   end
 
-  eq = eq or defaults.eq
+  eq = eq or Defaults.eq
   for i = 1, #a1 do
     if not eq(a1[i], a2[i]) then
       return false
@@ -761,7 +761,7 @@ function index_of(a, v, from, to, eq)
     return
   end
   from, to, eq = normalize(a, from, to, eq)
-  eq = eq or defaults.eq
+  eq = eq or Defaults.eq
   for i = from, to do
     if eq(a[i], v) then
       return i
@@ -784,7 +784,7 @@ function last_index_of(a, v, from, to, eq)
     return
   end
   from, to, eq = normalize(a, from, to, eq)
-  eq = eq or defaults.eq
+  eq = eq or Defaults.eq
   for i = to, from, -1 do
     if eq(a[i], v) then
       return i
@@ -912,7 +912,7 @@ function remove(a, v, from, to, eq)
     return false
   end
   from, to, eq = normalize(a, from, to, eq)
-  eq = eq or defaults.eq
+  eq = eq or Defaults.eq
   for i = from, to do
     if eq(a[i], v) then
       tbl_remove(a, i)
@@ -935,7 +935,7 @@ function remove_all(a, v, from, to, eq)
     return 0
   end
   from, to, eq = normalize(a, from, to, eq)
-  eq = eq or defaults.eq
+  eq = eq or Defaults.eq
   local n = 0
   for i = to, from, -1 do
     if eq(a[i], v) then
