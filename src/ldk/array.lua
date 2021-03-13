@@ -1044,34 +1044,37 @@ end
 
 --- Inserts the values of an array at the given position in another array, shifting
 -- its elements. If a predicated is specified, the source array is filtered using it.
--- @tparam table a1 the array to insert the values into.
+-- @tparam table a1 the array with the values to insert.
+-- @tparam table a2 the array to insert the values into.
 -- @tparam[opt=#a1 + 1] integer pos the position at which to insert the new values.
--- @tparam table a2 the array with the values to insert.
--- @tparam function p a function to test each element (see @{predicate}).
-function insert_all(a1, pos, a2, p)
-  if type(pos) == 'table' then
-    a2, p, pos = pos, a2, #a1 + 1
+-- @tparam[opt] function p a function to test each element (see @{predicate}).
+function insert_all(a1, a2, pos, p)
+  if type(pos) == 'function' then
+    p, pos = pos, nil
   end
-  local n = #a2
+  if pos == nil then
+    pos = #a2 + 1
+  end
+  if #a1 == 0 then
+    return
+  end
+
+  local n = #a1
   if p then
-    for _, x in ipairs(a2) do
-      if not p(x) then
-        n = n - 1
-      end
-    end
+    n = #a1 - count(a1, p)
   end
-  if pos <= #a1 then
-    tbl_move(a1, pos, #a1, pos + n, a1)
+  if pos <= #a2 then
+    tbl_move(a2, pos, #a2, pos + n, a2)
   end
   if p then
-    for _, x in ipairs(a2) do
-      if p(x) then
-        a1[pos] = x
+    for i, v in ipairs(a1) do
+      if p(v, i) then
+        a2[pos] = v
         pos = pos + 1
       end
     end
   else
-    tbl_move(a2, 1, #a2, pos, a1)
+    tbl_move(a1, 1, #a1, pos, a2)
   end
 end
 
