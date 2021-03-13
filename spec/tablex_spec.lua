@@ -319,26 +319,11 @@ describe("#tablex", function()
     end)
   end)
   describe("tostring", function()
-    it("should nicely format a table", function()
-      assert.same([[
-{-- 0
-  ["color"] = "red",
-  ["name"] = "apple",
-  ["price"] = 200,
-}]], tablex.tostring(apple(), true))
-    end)
-    it("should nicely format a table with sub-tables", function()
-      local a = apple()
-      assert.same([[
-{-- 0
-  [1] = {-- 1
-    ["color"] = "red",
-    ["name"] = "apple",
-    ["price"] = 200,
-  },
-  [2] = @1,
-  [3] = {} -- 2,
-}]], tablex.tostring({a,a,{}}, true))
+    it("should convert a table into a string", function()
+      local s = tablex.to_string(apple())
+      assert.not_nil(s:find("['color']='red'", 1, true))
+      assert.not_nil(s:find("['name']='apple'", 1, true))
+      assert.not_nil(s:find("['price']=200", 1, true))
     end)
   end)
 end)

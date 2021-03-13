@@ -15,18 +15,15 @@ local function always(v) return function() return v end end
 describe("#array", function()
   describe("insert_all", function()
     local TestCases = {
-      {{1}, nil, {2}, {1,2}},
-      {{1,2}, nil, {3,4}, {1,2,3,4}},
-      {{1,2}, 2, {3,4}, {1,3,4,2}},
+      {{2}, {1}, nil, {1,2}},
+      {{3,4}, {1,2}, nil, {1,2,3,4}},
+      {{3,4}, {1,2}, 2, {1,3,4,2}},
     }
     for _, case in ipairs(TestCases) do
-      local a1, pos, a2, expected = table.unpack(case)
-      if not pos then
-        pos, a2 = a2, nil
-      end
+      local a1, a2, pos, expected = table.unpack(case)
       it("should insert the second array into the first", function()
-        array.insert_all(a1, pos, a2)
-        assert.same(expected, a1)
+        array.insert_all(a1, a2, pos)
+        assert.same(expected, a2)
       end)
     end
   end)
@@ -259,7 +256,6 @@ describe("#array", function()
     local TestCases = {
       {{}, always(true), {}},
       {{1,2,3,4,5}, lt(3), {3,4,5}},
-      {{1,3,2,4,5}, lt(3), {3,2,4,5}},
       {{1,2,3,4,5}, lt(0), {1,2,3,4,5}}
     }
     for _, case in ipairs(TestCases) do
@@ -543,14 +539,14 @@ describe("#array", function()
       assert.equal(2, array.remove_all_if({1,2,3,2,1}, 1, 4, eq(2)))
     end)
   end)
-  describe("tostring", function()
+  describe("to_string", function()
     it("should return the proper string representation", function()
-      assert.equal('{}', array.tostring({}))
-      assert.equal('{1}', array.tostring({1}))
-      assert.equal('{1, 2}', array.tostring({1,2}))
-      assert.equal('{1, ..}', array.tostring({1,2}, 1,1))
-      assert.equal('{.., 2}', array.tostring({1,2}, 2))
-      assert.equal('{.., 2, ..}', array.tostring({1,2,3}, 2, 2))
+      assert.equal('{}', array.to_string({}))
+      assert.equal('{1}', array.to_string({1}))
+      assert.equal('{1,2}', array.to_string({1,2}))
+      assert.equal('{1,...}', array.to_string({1,2}, 1,1))
+      assert.equal('{...,2}', array.to_string({1,2}, 2))
+      assert.equal('{...,2,...}', array.to_string({1,2,3}, 2, 2))
     end)
   end)
   describe("each", function()
