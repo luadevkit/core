@@ -579,6 +579,34 @@ function format(s, ...)
   return tbl_concat(b)
 end
 
+local EscapeSequences = {
+  single_quote = {
+    ['\a'] = '\\a',
+    ['\b'] = '\\b',
+    ['\f'] = '\\f',
+    ['\n'] = '\\n',
+    ['\r'] = '\\r',
+    ['\t'] = '\\t',
+    ['\v'] = '\\v',
+    ['\''] = '\\\'',
+  },
+  double_quote = {
+    ['\a'] = '\\a',
+    ['\b'] = '\\b',
+    ['\f'] = '\\f',
+    ['\n'] = '\\n',
+    ['\r'] = '\\r',
+    ['\t'] = '\\t',
+    ['\v'] = '\\v',
+    ['"'] = '\\\"',
+  }
+}
+
+function smart_quotes(s, double)
+  local repl = double and EscapeSequences.double_quote or EscapeSequences.single_quote
+  return ("'%s'"):format(s:gsub('.', repl))
+end
+
 --- Function Types
 -- @section fntypes
 
